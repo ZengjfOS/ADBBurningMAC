@@ -43,7 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ADBCmd.cs" />
+    <Compile Include="Bin2File.cs" />
     <Compile Include="DBIdMAC.cs" />
+    <Compile Include="Eeprom.cs" />
     <Compile Include="MACSQLite.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

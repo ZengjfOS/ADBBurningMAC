@@ -50,8 +50,8 @@
             this.cleanOutputMessage = new System.Windows.Forms.Button();
             this.adbcmdShow = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.BurningProgressBar = new System.Windows.Forms.ProgressBar();
             this.BurningStatue = new System.Windows.Forms.Button();
+            this.BurningProgressBar = new System.Windows.Forms.ProgressBar();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -82,7 +82,7 @@
             this.eepromVersion.FormattingEnabled = true;
             this.eepromVersion.Location = new System.Drawing.Point(86, 18);
             this.eepromVersion.Name = "eepromVersion";
-            this.eepromVersion.Size = new System.Drawing.Size(49, 22);
+            this.eepromVersion.Size = new System.Drawing.Size(71, 22);
             this.eepromVersion.TabIndex = 0;
             // 
             // groupBox5
@@ -239,6 +239,7 @@
             this.macLV.TabIndex = 14;
             this.macLV.UseCompatibleStateImageBehavior = false;
             this.macLV.View = System.Windows.Forms.View.Details;
+            this.macLV.SelectedIndexChanged += new System.EventHandler(this.macLV_SelectedIndexChanged);
             // 
             // adbCmd
             // 
@@ -285,13 +286,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "ADB To EEPROM Output Message";
             // 
-            // BurningProgressBar
-            // 
-            this.BurningProgressBar.Location = new System.Drawing.Point(10, 169);
-            this.BurningProgressBar.Name = "BurningProgressBar";
-            this.BurningProgressBar.Size = new System.Drawing.Size(534, 23);
-            this.BurningProgressBar.TabIndex = 13;
-            // 
             // BurningStatue
             // 
             this.BurningStatue.Location = new System.Drawing.Point(562, 170);
@@ -299,6 +293,13 @@
             this.BurningStatue.Size = new System.Drawing.Size(52, 23);
             this.BurningStatue.TabIndex = 14;
             this.BurningStatue.UseVisualStyleBackColor = true;
+            // 
+            // BurningProgressBar
+            // 
+            this.BurningProgressBar.Location = new System.Drawing.Point(10, 169);
+            this.BurningProgressBar.Name = "BurningProgressBar";
+            this.BurningProgressBar.Size = new System.Drawing.Size(534, 23);
+            this.BurningProgressBar.TabIndex = 13;
             // 
             // MainForm
             // 

@@ -1,4 +1,5 @@
-﻿using SQLiteMACW;
+﻿using ADBBurningMAC;
+using SQLiteMACW;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +19,6 @@ namespace ADBBurningMAC
         {
             InitializeComponent();
 
-            Application.EnableVisualStyles();
-
             // 初始化显示MAC的listview
             initMACListView();
 
@@ -28,6 +27,15 @@ namespace ADBBurningMAC
 
             // 设置状态标签背景
             BurningStatue.BackColor = Color.Green;
+
+            eepromVersion.Items.Add("0x03");
+            eepromVersion.Items.Add("0xFF");
+            eepromVersion.SelectedIndex = 0;
+
+            displayType.Items.Add("7\"");
+            displayType.SelectedIndex = 0;
+
+            BurningStatue.Enabled = false;
         }
 
         // 从数据库中获取第一行中的MAC 
@@ -125,22 +133,25 @@ namespace ADBBurningMAC
 
         private void adbCmdClick(object sender, EventArgs e)
         {
-            // WinCmd.cmd("dir");
-            // WinCmd.cmd("ipconfig");
+            EepromDataBinFile();
 
-            WinCmd.cmd("adb shell mount -o remount /dev/block/mtdblock2 /system", adbcmdShow);
-            WinCmd.cmd("adb shell echo " + currentMAC.Text + " > /sys/bus/i2c/devices/3-0050/eeprom", adbcmdShow);
+            if (!ADBCmd.detectDevice())
+                return;
 
-            // 确认数据是否写入到EEPROM中
-            String returnBack = WinCmd.cmd("adb shell cat /sys/bus/i2c/devices/3-0050/eeprom", adbcmdShow);
-            string s = @"^([0-9a-fA-F]{2})(([/\s:-][0-9a-fA-F]{2}){5})$";
-            Regex r = new Regex(s, RegexOptions.IgnoreCase);
-            Match m = r.Match(returnBack);
-            if (m.Success)
+            ADBCmd.push("eeprom.bin", "/data/local", adbcmdShow);
+            ADBCmd.execute("mount -o remount /dev/block/mtdblock2 /system", adbcmdShow);
+            ADBCmd.execute("dd if=/data/local/eeprom.bin of=/sys/bus/i2c/devices/3-0050/eeprom", adbcmdShow);
+
+            // 确认数据是否正确写入到EEPROM中
+            ADBCmd.execute("dd if=/sys/bus/i2c/devices/3-0050/eeprom of=/data/local/eeprom_bak.bin", adbcmdShow);
+            ADBCmd.pull("/data/local/eeprom_bak.bin", ".", adbcmdShow);
+            if (Eeprom.readDataWithCompare("eeprom_bak.bin"))
+            // if (Eeprom.readDataWithCompare("eeprom.bin"))
             {
                 MessageBox.Show("Success.");
 
-                adbCmd.Text = "Success.";
+                Eeprom.parseFileData();
+
                 BurningStatue.BackColor = Color.Green;
 
                 // 删除操作成功的MAC
@@ -152,8 +163,19 @@ namespace ADBBurningMAC
                 MessageBox.Show("False.");
 
                 BurningStatue.BackColor = Color.Red;
-                BurningProgressBar.Value = 100;
             }
+        }
+
+        private void EepromDataBinFile()
+        {
+            Eeprom.cleanDataList();
+
+            Eeprom.setMac(currentMAC.Text);
+
+            // Eeprom.setDisplay((byte)displayType.SelectedIndex);
+
+            Eeprom.dataListConvertToDataArray();
+            Eeprom.saveData();
         }
 
         private void macLV_SelectedIndexChanged(object sender, EventArgs e)
