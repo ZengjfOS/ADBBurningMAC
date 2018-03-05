@@ -8,12 +8,12 @@ using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Net;
 
 namespace ADBBurningMAC
 {
     public partial class MainForm : Form
     {
-        Bitmap qrBitmap = null;
 
         public MainForm()
         {
@@ -133,8 +133,29 @@ namespace ADBBurningMAC
 
         private void adbCmdClick(object sender, EventArgs e)
         {
-            EepromDataBinFile();
+            // EepromDataBinFile();
 
+            using (var client = new WebClient())
+            {
+                var responseString = client.DownloadString("http://192.168.1.202/common/eeprom.php?version=3&mac=" + currentMAC.Text.Replace(":", ""));
+                if (responseString == "OK")
+                {
+                    MessageBox.Show("Success.");
+
+                    BurningStatue.BackColor = Color.Green;
+
+                    // 删除操作成功的MAC
+                    MACSQLite.deleteMac("macs", currentMAC.Text);
+                    refreshListView();
+                }
+                else
+                {
+                    MessageBox.Show("http access error.");
+                    Console.WriteLine(responseString);
+                    BurningStatue.BackColor = Color.Red;
+                }
+            }
+            /*
             if (!ADBCmd.detectDevice())
                 return;
 
@@ -164,6 +185,7 @@ namespace ADBBurningMAC
 
                 BurningStatue.BackColor = Color.Red;
             }
+            */
         }
 
         private void EepromDataBinFile()

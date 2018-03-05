@@ -310,6 +310,7 @@
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox2);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ADBBurningMAC";
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
